@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Retrieves the most relevant case study excerpt for an account based on its industry, to use as a proof point in sales outreach.</description>
+    <developerName>Find_Relevant_Case_Study</developerName>
+    <masterLabel>Find Relevant Case Study</masterLabel>
+    <templateVersions>
+        <content>### INSTRUCTIONS
+1. The account&apos;s industry is provided below, along with any additional context about the account&apos;s situation.
+2. Search the CASE STUDIES section to find the most relevant proof point, considering both the industry and any additional context provided.
+3. If a relevant case study is found, summarize it in 2-3 sentences as a proof point for sales outreach.
+4. If no relevant case study is found, state that clearly rather than inventing one.
+###
+INDUSTRY:
+{!$Input:industry}
+###
+ADDITIONAL CONTEXT:
+{!$Input:additional_context}
+###
+CASE STUDIES:
+{!$EinsteinSearch:Case_Studies_Retriever_1Cx_Be7542ff395.results}
+###
+Response:
+</content>
+        <inputs>
+            <apiName>industry</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>industry</masterLabel>
+            <referenceName>Input:industry</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>additional_context</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>additional_context</masterLabel>
+            <referenceName>Input:additional_context</referenceName>
+            <required>false</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Case_Studies_Retriever_1Cx_Be7542ff395</definition>
+            <description>Retrieves relevant case study content (chunked case studies covering electronics, biotech, manufacturing/logistics, and hospitality backup power) to ground personalized outreach with real proof points, matched by industry relevance.</description>
+            <label>Case_Studies_Retriever</label>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:additional_context}{!$Input:industry}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://Integer</definition>
+                <isRequired>false</isRequired>
+                <parameterName>resultCount</parameterName>
+                <valueExpression>1</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Case_Studies_Retriever_1Cx_Be7542ff395</referenceName>
+        </templateDataProviders>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>

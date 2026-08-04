@@ -1,0 +1,11 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "name": "sales-lead-agent-project",
+  "namespace": "",
+  "sourceApiVersion": "62.0"
+}
