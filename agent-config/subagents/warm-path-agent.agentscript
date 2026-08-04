@@ -1,0 +1,46 @@
+subagent Warm_Path_Agent:
+    label: "Warm-Path Agent"
+    description: |
+
+        Determines whether a lead or account has an existing internal relationship (warm) or no prior connection (cold), and surfaces a fit score to help sellers prioritize outreach.
+    reasoning:
+        instructions: ->
+            |When asked to assess an account's relationship status or determine if it's a warm or cold lead, check if varAccountId is already available from earlier in this session. If it is, run Find Relationship Recency using that value. If varAccountId is not yet available, tell the user you need the account resolved first, and suggest researching the account by name before checking relationship status. 
+             If a recent interaction is found, describe the account as warm, name the internal rep who has the relationship, and briefly mention the relationship context. If no interaction is found, describe the account as cold with no known internal connection, and note that outreach will need to start cold.
+             After determining the relationship status: if this is part of a broader research request (news and case study were already gathered earlier in this conversation), run {!@actions.go_to_Outreach_Agent} to produce the final formatted brief for the seller. Otherwise, if this was a standalone relationship question with no prior research in this conversation, answer directly without transitioning.
+
+        actions:
+            Find_Relationship_Recency: @actions.Find_Relationship_Recency
+                with AccountId = ...
+            go_to_Outreach_Agent: @utils.transition to @subagent.Outreach_Agent
+
+    actions:
+        Find_Relationship_Recency:
+            label: "Find Relationship Recency"
+            description: "Looks up the most recent internal relationship signal for a given account, to determine whether a warm internal connection exists before outreach."
+            target: "flow://Get_Relationship_Recency"
+            inputs:
+                AccountId: string
+                    label: "AccountId"
+                    description: "The Salesforce Account ID to look up relationship history for."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varInternalRep: string
+                    label: "varInternalRep"
+                    description: "The name of the internal rep who has the most recent relationship with this account."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varLastInteractionDate: date
+                    label: "varLastInteractionDate"
+                    description: "The date of the most recent internal interaction with this account, if any."
+                    complex_data_type_name: "lightning__dateType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varRelationshipContext: string
+                    label: "varRelationshipContext"
+                    description: "A short note describing the nature of the most recent internal relationship signal."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False

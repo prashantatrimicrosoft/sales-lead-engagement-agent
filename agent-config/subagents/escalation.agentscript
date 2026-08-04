@@ -1,0 +1,10 @@
+subagent escalation:
+    label: "Escalation"
+    description: "Handles requests from users who want to transfer or escalate their conversation to a live human agent."
+    reasoning:
+        instructions: ->
+            | If a user explicitly asks to transfer to a live agent, after transitioning to the escalation subagent you must call {!@actions.escalate_to_human} to complete the escalation.
+              If escalation to a live agent fails for any reason, acknowledge the issue and ask the user whether they would like to log a support case instead.
+        actions:
+            escalate_to_human: @utils.escalate
+                description: "Call this tool if the user indicates that they wish to escalate to a human agent."

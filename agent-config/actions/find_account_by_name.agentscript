@@ -1,0 +1,23 @@
+        find_account_by_name:
+            label: "find_account_by_name"
+            description: "Resolves an account's name to its Salesforce Account ID, so other actions can look up records for that account."
+            target: "flow://Find_Account_By_Name"
+            inputs:
+                AccountName: string
+                    label: "AccountName"
+                    description: "The account's name as mentioned by the user."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varAccountId: string
+                    label: "varAccountId"
+                    description: "The Salesforce Account ID matching this account name."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varIndustry:  string
+                    label: "varIndustry"
+                    description: "The account's industry, used to ground the case study search and improve proof-point relevance."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False

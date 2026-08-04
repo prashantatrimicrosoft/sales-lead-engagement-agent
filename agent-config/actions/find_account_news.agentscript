@@ -1,0 +1,29 @@
+        Find_Account_News:
+            label: "Find Account News"
+            description: "Looks up the most recent news or business trigger for a given account, to help the seller open with timely, relevant context."
+            target: "flow://Get_Account_News"
+            inputs:
+                AccountId: string
+                    label: "AccountId"
+                    description: "The Salesforce Account ID to look up recent news for."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varHeadline: string
+                    label: "varHeadline"
+                    description: "Short headline of the account's most recent news trigger."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varPublishedDate: date
+                    label: "varPublishedDate"
+                    description: "The date the news item was published."
+                    complex_data_type_name: "lightning__dateType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varSummary: string
+                    label: "varSummary"
+                    description: "A short summary of the account's news trigger, used to ground outreach."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False

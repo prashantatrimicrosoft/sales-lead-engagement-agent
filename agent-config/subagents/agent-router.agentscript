@@ -1,0 +1,15 @@
+start_agent agent_router:
+    label: "Agent Router"
+    description: "Welcome the user and determine the appropriate subagent based on user input"
+    model_config:
+        model: "model://sfdc_ai__DefaultEinsteinHyperClassifier"
+    reasoning:
+        instructions: ->
+            | Select the best tool to call based on conversation history and user's intent.
+        actions:
+            go_to_escalation: @utils.transition to @subagent.escalation
+            go_to_off_topic: @utils.transition to @subagent.off_topic
+            go_to_ambiguous_question: @utils.transition to @subagent.ambiguous_question
+            go_to_Research_Agent: @utils.transition to @subagent.Research_Agent
+            go_to_Warm_Path_Agent: @utils.transition to @subagent.Warm_Path_Agent
+            go_to_Outreach_Agent: @utils.transition to @subagent.Outreach_Agent

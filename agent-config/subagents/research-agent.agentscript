@@ -1,0 +1,134 @@
+subagent Research_Agent:
+    label: "Research Agent"
+    description: |
+
+        Research prospect accounts and leads for a backup power and generator systems business. Find relevant recent account news or triggers, and surface the most relevant case study proof point based on the account's industry (electronics/networking, biotechnology, manufacturing/logistics, or hospitality)
+    reasoning:
+        instructions: ->
+            |When asked to research an account, follow these steps in order:
+             1. Run {!@actions.find_account_by_name} using the account name provided to resolve varAccountId.
+             2. If no account is found, tell the user you couldn't find that account and stop.
+             3. Run {!@actions.Find_Account_News} using varAccountId to look up recent news.
+             4. Use varIndustry from step 1 as the industry, and build a short additional_context string using any news headline found in step 3.
+             5. Run {!@actions.Find_Relevant_Case_Study} using the industry and that additional_context to find a proof point.
+             6. Combine the news trigger (if any) and the case study proof point (promptResponse) into a short research brief for the seller.
+             7. Run {!@actions.go_to_Warm_Path_Agent} to check the account's relationship status, then give the seller a complete answer combining everything.
+        actions:
+            Find_Account_News: @actions.Find_Account_News
+                with AccountId = ...
+            find_account_by_name: @actions.find_account_by_name
+                with AccountName = ...
+            Find_Relevant_Case_Study: @actions.Find_Relevant_Case_Study
+                with "Input:industry" = ...
+                with "Input:additional_context" = ...
+                with outputLanguage = ...
+                with citationMode = ...
+                with isPreviewOnly = ...
+            go_to_Warm_Path_Agent: @utils.transition to @subagent.Warm_Path_Agent
+
+
+
+
+
+    actions:
+        Find_Account_News:
+            label: "Find Account News"
+            description: "Looks up the most recent news or business trigger for a given account, to help the seller open with timely, relevant context."
+            target: "flow://Get_Account_News"
+            inputs:
+                AccountId: string
+                    label: "AccountId"
+                    description: "The Salesforce Account ID to look up recent news for."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varHeadline: string
+                    label: "varHeadline"
+                    description: "Short headline of the account's most recent news trigger."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varPublishedDate: date
+                    label: "varPublishedDate"
+                    description: "The date the news item was published."
+                    complex_data_type_name: "lightning__dateType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varSummary: string
+                    label: "varSummary"
+                    description: "A short summary of the account's news trigger, used to ground outreach."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+        find_account_by_name:
+            label: "find_account_by_name"
+            description: "Resolves an account's name to its Salesforce Account ID, so other actions can look up records for that account."
+            target: "flow://Find_Account_By_Name"
+            inputs:
+                AccountName: string
+                    label: "AccountName"
+                    description: "The account's name as mentioned by the user."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varAccountId: string
+                    label: "varAccountId"
+                    description: "The Salesforce Account ID matching this account name."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varIndustry:  string
+                    label: "varIndustry"
+                    description: "The account's industry, used to ground the case study search and improve proof-point relevance."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+        Find_Relevant_Case_Study:
+            label: "Find Relevant Case Study"
+            description: "Finds the most relevant case study for an account based on its industry and situational context, to use as a proof point in outreach."
+            target: "generatePromptResponse://Find_Relevant_Case_Study"
+            inputs:
+                "Input:industry": string
+                    label: "industry"
+                    description: "The account's industry, used to find a relevant case study proof point."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+                "Input:additional_context": string
+                    label: "additional_context"
+                    description: "Optional situational context about the account, such as a recent news trigger, used to sharpen the case study match."
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+                outputLanguage: string
+                    label: "Output language"
+                    description: "Optional. Specify the response language using the appropriate two-character language code or five-character locale code (for example, en_US, en_GB, es, es_MX)."
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+                citationMode: string
+                    label: "Citation Mode"
+                    description: "Select Citation Mode"
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+                isPreviewOnly: boolean
+                    label: "Preview Only"
+                    description: "Resolves the prompt template without generating an LLM response."
+                    is_required: False
+                    complex_data_type_name: "lightning__booleanType"
+            outputs:
+                promptResponse: string
+                    label: "Prompt Response"
+                    description: "The prompt response generated by the action based on the specified prompt and input."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                generationId: string
+                    label: "Prompt Generation ID"
+                    description: "The unique identifier for the prompt generation associated with this action invocation."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                citations: object
+                    label: "Citations"
+                    description: "The prompt citation response generated by the action based on the specified prompt and input."
+                    complex_data_type_name: "@apexClassType/AiCopilot__GenAiCitationOutput"
+                    is_displayable: False
+                    filter_from_agent: False

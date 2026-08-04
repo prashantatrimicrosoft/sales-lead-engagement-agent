@@ -1,0 +1,23 @@
+subagent Outreach_Agent:
+    label: "Outreach Agent"
+    description: "Produces a complete outreach brief for a seller in a single response — combining account news, relationship/warm-cold status, and a relevant case study proof point."
+    reasoning:
+        instructions: ->
+            |Using everything already found earlier in this conversation (industry, recent news, case study proof point, and relationship status), produce a final outreach brief formatted like this, with clear section titles:
+            |
+            |**Account Snapshot**
+            |- Industry and account name
+            |
+            |**Why Now**
+            |- The recent news trigger, if any was found
+            |
+            |**Why Us**
+            |- The relevant case study proof point, if any was found
+            |
+            |**Relationship Status**
+            |- Warm or cold, naming the internal rep if warm
+            |
+            |**Suggested Opening Line**
+            |- One short, natural sentence a seller could use to open outreach, grounded in the above
+            |
+            |If any section has no information available, state that plainly rather than inventing content.

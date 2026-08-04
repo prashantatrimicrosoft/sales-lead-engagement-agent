@@ -1,0 +1,29 @@
+        Find_Relationship_Recency:
+            label: "Find Relationship Recency"
+            description: "Looks up the most recent internal relationship signal for a given account, to determine whether a warm internal connection exists before outreach."
+            target: "flow://Get_Relationship_Recency"
+            inputs:
+                AccountId: string
+                    label: "AccountId"
+                    description: "The Salesforce Account ID to look up relationship history for."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varInternalRep: string
+                    label: "varInternalRep"
+                    description: "The name of the internal rep who has the most recent relationship with this account."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varLastInteractionDate: date
+                    label: "varLastInteractionDate"
+                    description: "The date of the most recent internal interaction with this account, if any."
+                    complex_data_type_name: "lightning__dateType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varRelationshipContext: string
+                    label: "varRelationshipContext"
+                    description: "A short note describing the nature of the most recent internal relationship signal."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
