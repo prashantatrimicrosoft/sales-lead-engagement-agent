@@ -37,6 +37,81 @@ receives a complete briefing in one response: account snapshot, recent news,
 any live/urgent trigger, a relevant case study, a product fit
 recommendation, warm/cold relationship status, and a suggested opening line.
 
+---
+
+## Architecture — multi-agent system
+
+```mermaid
+flowchart TD
+    User[Seller's request] --> Router{Agent Router}
+    Router -->|full research / briefing| Research[Research Agent]
+    Router -->|standalone warm/cold check| Warm[Warm-Path Agent]
+    Router -->|escalation / off-topic / ambiguous| Fallback[Built-in fallback subagents]
+
+    Research -->|"5 actions: resolve account,<br/>news, live trigger,<br/>case study, product fit"| Research
+    Research ==>|transition| Warm
+    Warm -->|"1 action:<br/>relationship recency"| Warm
+    Warm ==>|"transition, if part of<br/>a full research request"| Outreach[Outreach Agent]
+    Warm -.->|standalone question:<br/>answers directly| Done1[Warm/cold answer]
+    Outreach -->|synthesizes everything,<br/>no actions of its own| Done2[Complete outreach brief]
+```
+
+**Key architectural finding:** Agentforce's built-in Agent Router only
+supports single-hop routing — it hands off to exactly one subagent per turn
+and cannot itself orchestrate a multi-step sequence across subagents. The
+working pattern discovered through testing is a **subagent-to-subagent
+transition chain** (`@utils.transition to @subagent.X`), where each
+subagent's own reasoning — not the router — decides when to hand off next.
+Research Agent runs its own actions, then transitions to Warm-Path Agent,
+which conditionally transitions to Outreach Agent for final synthesis. This
+forms a directed, three-hop chain within a single user turn — reachable only
+this way, since Outreach Agent has no actions of its own and is never routed
+to directly.
+
+---
+
+## Architecture — Data 360 as the grounding layer
+
+```mermaid
+flowchart TB
+    subgraph D360["Data 360 (Data Cloud) — unified grounding layer"]
+        direction LR
+        Structured["Structured<br/>Account, Relationship_Signal__c,<br/>Account_News__c"]
+        Insights["Calculated Insights<br/>fit score, win rate, recency"]
+        Unstructured["Unstructured<br/>case studies, product docs<br/>(Search Index / retrievers)"]
+        RealTime["Real-time<br/>Live_News_Trigger_DMO<br/>(Ingestion API)"]
+    end
+
+    subgraph AF["Agentforce"]
+        Flows["Flows<br/>(deterministic lookups)"]
+        Prompts["Prompt Templates<br/>(retriever + LLM)"]
+        Actions[Agentforce Actions]
+        Agents[Research / Warm-Path / Outreach Agents]
+    end
+
+    Structured --> Flows
+    RealTime --> Flows
+    Unstructured --> Prompts
+    Insights -.->|"blocked from direct Flow access —<br/>see known limitations"| Flows
+
+    Flows --> Actions
+    Prompts --> Actions
+    Actions --> Agents
+```
+
+**Why this split matters:** Data 360 is the single unified layer beneath
+Agentforce — structured CRM data, computed insights, unstructured documents,
+and real-time streamed events all live here, regardless of source or shape.
+Agentforce never touches raw data directly; every action grounds itself
+through either a Flow (deterministic, one right answer) or a Prompt Template
+plus retriever (semantic, judgment-based). The one dotted line marks a real,
+diagnosed limitation: Calculated Insight objects are blocked from Flow's Get
+Records in this environment, so `Account_Fit_Score_Final` — though fully
+computed and verified in Data 360 — isn't yet wired into the agent layer.
+Everything else in this diagram is a proven, working connection.
+
+---
+
 ## Advance delivery
 
 - **Multi-agent collaboration** — three specialist subagents (Research,
