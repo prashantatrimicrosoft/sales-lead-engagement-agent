@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenAiPromptTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Retrieves the most relevant product one-pager information for an account based on its industry and situational context, to surface a product fit talking point for sales outreach.</description>
+    <developerName>Find_Product_Fit</developerName>
+    <masterLabel>Find_Product_Fit</masterLabel>
+    <templateVersions>
+        <content>### INSTRUCTIONS
+1. The account&apos;s industry and any additional context are provided below. 
+2. Search the PRODUCT INFO section to find the most relevant product fit — specs, install considerations, or SLA options. 
+3. If a relevant product match is found, summarize it in 2-3 sentences as a product fit talking point for sales outreach. 
+4. If no relevant product info is found, state that clearly rather than inventing one. 
+5. End your response immediately after the substantive product fit content. Do not add a closing sentence, sign-off, thank-you, or any acknowledgment of the reader — these are strictly forbidden. The last sentence must contain product or service information, nothing else.
+###
+INDUSTRY:
+{!$Input:industry}
+###
+ADDITIONAL CONTEXT:
+{!$Input:additional_context}
+###
+PRODUCT INFO:
+{!$EinsteinSearch:Product_OnePagers_DMO_Retriever_1Cx_Be71e1bfa38.results}
+###
+Response:
+</content>
+        <inputs>
+            <apiName>industry</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>industry</masterLabel>
+            <referenceName>Input:industry</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>additional_context</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>additional_context</masterLabel>
+            <referenceName>Input:additional_context</referenceName>
+            <required>false</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Product_OnePagers_DMO_Retriever_1Cx_Be71e1bfa38</definition>
+            <description>Retrieves product specification content (generator systems and installation/SLA maintenance offerings) to ground outreach with concrete product facts.</description>
+            <label>Product_OnePagers_Retriever</label>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:industry}{!$Input:additional_context}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://Integer</definition>
+                <isRequired>false</isRequired>
+                <parameterName>resultCount</parameterName>
+                <valueExpression>2</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Product_OnePagers_DMO_Retriever_1Cx_Be71e1bfa38</referenceName>
+        </templateDataProviders>
+    </templateVersions>
+    <templateVersions>
+        <content>### INSTRUCTIONS
+1. The account&apos;s industry and any additional context are provided below. 
+2. Search the PRODUCT INFO section to find the most relevant product fit — specs, install considerations, or SLA options. 
+3. If a relevant product match is found, summarize it in 2-3 sentences as a product fit talking point for sales outreach. 
+4. If no relevant product info is found, state that clearly rather than inventing one. 
+5. Only state a product fit if the retrieved product information genuinely and directly applies to the account&apos;s situation. Do not invent a rationale, industry connection, or customer narrative that isn&apos;t grounded in the retrieved content. If no product info is clearly relevant, state that plainly rather than forcing a fit.
+6. End your response immediately after the substantive product fit content. Do not add a closing sentence, sign-off, thank-you, or any acknowledgment of the reader — these are strictly forbidden. The last sentence must contain product or service information, nothing else.
+###
+INDUSTRY:
+{!$Input:industry}
+###
+ADDITIONAL CONTEXT:
+{!$Input:additional_context}
+###
+PRODUCT INFO:
+{!$EinsteinSearch:Product_OnePagers_DMO_Retriever_1Cx_Be71e1bfa38.results}
+###
+Response:
+</content>
+        <inputs>
+            <apiName>industry</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>industry</masterLabel>
+            <referenceName>Input:industry</referenceName>
+            <required>true</required>
+        </inputs>
+        <inputs>
+            <apiName>additional_context</apiName>
+            <definition>primitive://String</definition>
+            <masterLabel>additional_context</masterLabel>
+            <referenceName>Input:additional_context</referenceName>
+            <required>false</required>
+        </inputs>
+        <primaryModel>sfdc_ai__DefaultGPT5Mini</primaryModel>
+        <status>Published</status>
+        <templateDataProviders>
+            <definition>invocable://getEinsteinRetrieverResults/Product_OnePagers_DMO_Retriever_1Cx_Be71e1bfa38</definition>
+            <description>Retrieves product specification content (generator systems and installation/SLA maintenance offerings) to ground outreach with concrete product facts.</description>
+            <label>Product_OnePagers_Retriever</label>
+            <parameters>
+                <definition>primitive://String</definition>
+                <isRequired>true</isRequired>
+                <parameterName>searchText</parameterName>
+                <valueExpression>{!$Input:industry}{!$Input:additional_context}</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://List&lt;String&gt;</definition>
+                <isRequired>false</isRequired>
+                <parameterName>outputFieldNames</parameterName>
+                <valueExpression>[&quot;Chunk&quot;]</valueExpression>
+            </parameters>
+            <parameters>
+                <definition>primitive://Integer</definition>
+                <isRequired>false</isRequired>
+                <parameterName>resultCount</parameterName>
+                <valueExpression>2</valueExpression>
+            </parameters>
+            <referenceName>EinsteinSearch:Product_OnePagers_DMO_Retriever_1Cx_Be71e1bfa38</referenceName>
+        </templateDataProviders>
+    </templateVersions>
+    <type>einstein_gpt__flex</type>
+    <visibility>Global</visibility>
+</GenAiPromptTemplate>
