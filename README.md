@@ -1,6 +1,6 @@
 # Sales Lead Engagement Agent
 
-An Agentforce multi-agent system using Salesforce Data360 and Agentforce
+Multi-agent system using Salesforce Data360 and Agentforce
 
 ## The scenario
 
