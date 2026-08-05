@@ -37,3 +37,4 @@ sfca_results.json
 
 # Local environment variables
 .env
+.DS_Store
