@@ -46,7 +46,19 @@ start_agent agent_router:
         model: "model://sfdc_ai__DefaultEinsteinHyperClassifier"
     reasoning:
         instructions: ->
-            | Select the best tool to call based on conversation history and user's intent.
+            |Route the user's request to the correct subagent based on intent:
+             1. Full account research or outreach briefing (e.g., "research this account," "give me a briefing on X," "help me prepare outreach for X," "tell me about X"):
+                Route to go_to_Research_Agent.
+                This subagent resolves the account, checks for news and live triggers, checks warm/cold relationship status, finds a case study and product fit match, and combines everything into one complete brief. Always use this for any request involving a specific account name, even if the wording sounds like it's asking for an "outreach brief" directly.
+             2. A narrow, single-purpose relationship question with no other research requested (e.g., "is X a warm account," "do we have a relationship with X"):
+                Route to go_to_Warm_Path_Agent.
+             3. Escalation requests (user wants to talk to a human):
+                Route to go_to_escalation.
+             4. Off-topic requests (unrelated to sales research or accounts):
+                Route to go_to_off_topic.
+             5. Ambiguous requests that don't clearly match any of the above:
+                Route to go_to_ambiguous_question.
+             Never route directly to go_to_Outreach_Agent. Outreach Agent has no actions of its own and can only produce a complete answer after Research Agent and Warm-Path Agent have already gathered information earlier in this same response — it is reached only through internal transitions, never directly from this router.
         actions:
             go_to_escalation: @utils.transition to @subagent.escalation
             go_to_off_topic: @utils.transition to @subagent.off_topic
@@ -120,10 +132,12 @@ subagent Research_Agent:
              1. Run {!@actions.find_account_by_name} using the account name provided to resolve varAccountId.
              2. If no account is found, tell the user you couldn't find that account and stop.
              3. Run {!@actions.Find_Account_News} using varAccountId to look up recent news.
-             4. Use varIndustry from step 1 as the industry, and build a short additional_context string using any news headline found in step 3.
-             5. Run {!@actions.Find_Relevant_Case_Study} using the industry and that additional_context to find a proof point.
-             6. Combine the news trigger (if any) and the case study proof point (promptResponse) into a short research brief for the seller.
-             7. Run {!@actions.go_to_Warm_Path_Agent} to check the account's relationship status, then give the seller a complete answer combining everything.
+             4. Run {!@actions.Find_Live_News_Trigger} using varAccountId to check for any urgent, real-time trigger that may not yet be in the standard news feed.
+             5. Use varIndustry from step 1 as the industry. Build a short additional_context string that includes the operational trigger from step 3 (e.g. facility expansion, growth, downtime-relevant events), since this is what best matches case study and product content. If a live trigger was also found in step 4, add it as a secondary detail rather than replacing the operational context — the live trigger is most useful for the "Why Now" framing and opening line, not for driving the case study or product fit search.
+             6. Run {!@actions.Find_Relevant_Case_Study} using the industry and that additional_context to find a proof point.
+             7. Run {!@actions.Find_Product_Fit} using the same industry and additional_context to find a relevant product specification match.
+             8. Combine the standard news trigger, any live trigger alert, the case study proof point, and product fit info into your findings. If a live trigger was found, call it out distinctly as a time-sensitive alert rather than folding it into the general news summary.
+             9. Run {!@actions.go_to_Warm_Path_Agent} to check the account's relationship status, then give the seller a complete answer combining everything.
         actions:
             Find_Account_News: @actions.Find_Account_News
                 with AccountId = ...
@@ -135,9 +149,15 @@ subagent Research_Agent:
                 with outputLanguage = ...
                 with citationMode = ...
                 with isPreviewOnly = ...
+            Find_Product_Fit: @actions.Find_Product_Fit
+                with "Input:industry" = ...
+                with "Input:additional_context" = ...
+                with outputLanguage = ...
+                with citationMode = ...
+                with isPreviewOnly = ...
             go_to_Warm_Path_Agent: @utils.transition to @subagent.Warm_Path_Agent
-
-
+            Find_Live_News_Trigger: @actions.Find_Live_News_Trigger
+                with AccountId = ...
 
 
 
@@ -171,6 +191,7 @@ subagent Research_Agent:
                     complex_data_type_name: "lightning__textType"
                     is_displayable: False
                     filter_from_agent: False
+
         find_account_by_name:
             label: "find_account_by_name"
             description: "Resolves an account's name to its Salesforce Account ID, so other actions can look up records for that account."
@@ -194,6 +215,7 @@ subagent Research_Agent:
                     complex_data_type_name: "lightning__textType"
                     is_displayable: False
                     filter_from_agent: False
+
         Find_Relevant_Case_Study:
             label: "Find Relevant Case Study"
             description: "Finds the most relevant case study for an account based on its industry and situational context, to use as a proof point in outreach."
@@ -244,6 +266,86 @@ subagent Research_Agent:
                     is_displayable: False
                     filter_from_agent: False
 
+        Find_Product_Fit:
+            label: "Find Product Fit"
+            description: "Finds the most relevant product one-pager information for an account based on its industry and situational context, to surface a product fit talking point for sales outreach."
+            target: "generatePromptResponse://Find_Product_Fit"
+            inputs:
+                "Input:industry": string
+                    label: "industry"
+                    description: "The account's industry, used to find relevant product fit information."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+                "Input:additional_context": string
+                    label: "additional_context"
+                    description: "Optional situational context about the account, used to sharpen the product fit match."
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+                outputLanguage: string
+                    label: "Output language"
+                    description: "Optional. Specify the response language using the appropriate two-character language code or five-character locale code (for example, en_US, en_GB, es, es_MX)."
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+                citationMode: string
+                    label: "Citation Mode"
+                    description: "Select Citation Mode"
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+                isPreviewOnly: boolean
+                    label: "Preview Only"
+                    description: "Resolves the prompt template without generating an LLM response."
+                    is_required: False
+                    complex_data_type_name: "lightning__booleanType"
+            outputs:
+                promptResponse: string
+                    label: "Prompt Response"
+                    description: "The product fit talking point generated from the specified prompt and input."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                generationId: string
+                    label: "Prompt Generation ID"
+                    description: "The unique identifier for the prompt generation associated with this action invocation."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                citations: object
+                    label: "Citations"
+                    description: "The prompt citation response generated by the action based on the specified prompt and input."
+                    complex_data_type_name: "@apexClassType/AiCopilot__GenAiCitationOutput"
+                    is_displayable: False
+                    filter_from_agent: False
+
+        Find_Live_News_Trigger:
+            label: "Find Live News Trigger"
+            description: "Looks up the most recent live news trigger for a given account, ingested in real time, to surface urgent triggers as soon as they arrive."
+            target: "flow://Get_Live_News_Trigger"
+            inputs:
+                AccountId: string
+                    label: "AccountId"
+                    description: "The Salesforce Account ID to look up live news triggers for."
+                    is_required: False
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varTriggerHeadline: string
+                    label: "varTriggerHeadline"
+                    description: "Headline of the most recent live news trigger for this account."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varTriggerTimestamp: datetime
+                    label: "varTriggerTimestamp"
+                    description: "When this live trigger was published."
+                    complex_data_type_name: "lightning__dateTimeStringType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varTriggerType: string
+                    label: "varTriggerType"
+                    description: "The type of trigger (e.g. funding, expansion, leadership_change, product_launch)."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+
 subagent Warm_Path_Agent:
     label: "Warm-Path Agent"
     description: |
@@ -251,14 +353,18 @@ subagent Warm_Path_Agent:
         Determines whether a lead or account has an existing internal relationship (warm) or no prior connection (cold), and surfaces a fit score to help sellers prioritize outreach.
     reasoning:
         instructions: ->
-            |When asked to assess an account's relationship status or determine if it's a warm or cold lead, check if varAccountId is already available from earlier in this session. If it is, run Find Relationship Recency using that value. If varAccountId is not yet available, tell the user you need the account resolved first, and suggest researching the account by name before checking relationship status. 
-             If a recent interaction is found, describe the account as warm, name the internal rep who has the relationship, and briefly mention the relationship context. If no interaction is found, describe the account as cold with no known internal connection, and note that outreach will need to start cold.
-             After determining the relationship status: if this is part of a broader research request (news and case study were already gathered earlier in this conversation), run {!@actions.go_to_Outreach_Agent} to produce the final formatted brief for the seller. Otherwise, if this was a standalone relationship question with no prior research in this conversation, answer directly without transitioning.
+            ||When asked to assess an account's relationship status or determine if it's a warm or cold lead, check if varAccountId is already available from earlier in this session and corresponds to the account being asked about. If it is, run {!@actions.Find_Relationship_Recency} using that value. If it is not available, or belongs to a different account than the one being asked about, run {!@actions.find_account_by_name} first to resolve the account name to a real Account ID, then use that ID with {!@actions.Find_Relationship_Recency}. Never pass an account name directly as an AccountId value — always resolve it to a real ID first.
+            |              If a recent interaction is found, describe the account as warm, name the internal rep who has the relationship, and briefly mention the relationship context. If no interaction is found, describe the account as cold with no known internal connection, and note that outreach will need to start cold.
+            |              After determining the relationship status: if this is part of a broader research request (news and case study were already gathered earlier in this conversation), run {!@actions.go_to_Outreach_Agent} to produce the final formatted brief for the seller. Otherwise, if this was a standalone relationship question with no prior research in this conversation, answer directly without transitioning.
 
         actions:
             Find_Relationship_Recency: @actions.Find_Relationship_Recency
                 with AccountId = ...
+            find_account_by_name: @actions.find_account_by_name
+                with AccountName = ...
             go_to_Outreach_Agent: @utils.transition to @subagent.Outreach_Agent
+
+
 
     actions:
         Find_Relationship_Recency:
@@ -291,6 +397,30 @@ subagent Warm_Path_Agent:
                     is_displayable: False
                     filter_from_agent: False
 
+        find_account_by_name:
+            label: "find_account_by_name"
+            description: "Resolves an account's name to its Salesforce Account ID, so other actions can look up records for that account."
+            target: "flow://Find_Account_By_Name"
+            inputs:
+                AccountName: string
+                    label: "AccountName"
+                    description: "The account's name as mentioned by the user."
+                    is_required: True
+                    complex_data_type_name: "lightning__textType"
+            outputs:
+                varAccountId: string
+                    label: "varAccountId"
+                    description: "The Salesforce Account ID matching this account name."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+                varIndustry:  string
+                    label: "varIndustry"
+                    description: "The account's industry, used to ground the case study search and improve proof-point relevance."
+                    complex_data_type_name: "lightning__textType"
+                    is_displayable: False
+                    filter_from_agent: False
+
 subagent Outreach_Agent:
     label: "Outreach Agent"
     description: "Produces a complete outreach brief for a seller in a single response — combining account news, relationship/warm-cold status, and a relevant case study proof point."
@@ -304,8 +434,14 @@ subagent Outreach_Agent:
             |**Why Now**
             |- The recent news trigger, if any was found
             |
+            |**Live News Trigger Alert** (only include this section if a live trigger was found)
+            |- The real-time trigger, clearly marked as time-sensitive
+            |
             |**Why Us**
             |- The relevant case study proof point, if any was found
+            |
+            |**Product Fit**
+            |- The relevant product specification match, if any was found
             |
             |**Relationship Status**
             |- Warm or cold, naming the internal rep if warm
