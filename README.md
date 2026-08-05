@@ -1,7 +1,6 @@
 # Sales Lead Engagement Agent
 
-An Agentforce multi-agent system built for Salesforce's Data & AI Technical
-Architect panel presentation — Scenario 3: Sales Lead Engagement.
+An Agentforce multi-agent system using Salesforce Data360 and Agentforce
 
 ## The scenario
 
