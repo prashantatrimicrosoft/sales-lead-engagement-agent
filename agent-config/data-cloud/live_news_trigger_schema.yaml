@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: Live News Trigger Schema
+  version: 1.0.0
+components:
+  schemas:
+    Live_News_Trigger:
+      type: object
+      properties:
+        account_id:
+          type: string
+          example: "001gK00001FjoE1QAJ"
+        headline:
+          type: string
+          example: "Edge Communications announces new funding round"
+        trigger_type:
+          type: string
+          example: "funding"
+        published_timestamp:
+          type: string
+          format: date-time
+          example: "2026-08-04T14:30:00Z"
+        source:
+          type: string
+          example: "simulated_news_monitor"
