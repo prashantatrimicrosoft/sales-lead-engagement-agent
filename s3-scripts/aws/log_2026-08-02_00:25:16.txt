@@ -1,0 +1,14 @@
+aws CLI is already installed, skipping the installation
+AWS credentials are exported correctly
+AWS credentials entered in terminal are valid
+sales-lead-docs is a valid bucket name
+data360-lambda-source-prashant2026 is a valid bucket name
+case-studies is a valid S3 key within sales-lead-docs bucket
+aws_lambda_function.zip is a valid S3 key within data360-lambda-source-prashant2026 bucket
+local source code for cloud function exists at /Users/atriprimac/data360-s3-pipeline/file-notifier-for-blob-store-main/cloud_function_zips/aws_lambda_function.zip
+/Users/atriprimac/data360-s3-pipeline/file-notifier-for-blob-store-main/cloud_function_zips/aws_lambda_function.zip has a valid file of type .zip
+PEM file required for creation of secrete exists at /Users/atriprimac/server.pem
+/Users/atriprimac/server.pem has a valid file of type .pem
+There are validation errors as below:
+us-east-2 region is invalid, please use a valid region
+NOTE: Please check sample config file at https://github.com/forcedotcom/file-notifier-for-blob-store/blob/main/installers/aws/input_parameters_s3.conf

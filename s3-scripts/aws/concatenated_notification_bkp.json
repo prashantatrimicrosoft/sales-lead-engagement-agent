@@ -1,0 +1,26 @@
+{
+  "LambdaFunctionConfigurations": [
+    {
+      "Id": "Event_1785658059",
+      "LambdaFunctionArn": "arn:aws:lambda:us-east-2:523881171723:function:data360-s3-notifier",
+      "Events": [
+        "s3:ObjectCreated:*",
+        "s3:ObjectRemoved:*"
+      ],
+      "Filter": {
+        "Key": {
+          "FilterRules": [
+            {
+              "Name": "Prefix",
+              "Value": "case-studies"
+            },
+            {
+              "Name": "Suffix",
+              "Value": ""
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

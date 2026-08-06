@@ -1,0 +1,2 @@
+aws CLI is already installed, skipping the installation
+Please export all the three AWS credentials (AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN) and paste it to terminal (please use https://docs.aws.amazon.com/keyspaces/latest/devguide/access.credentials.html to generate it)

@@ -1,0 +1,53 @@
+aws CLI is already installed, skipping the installation
+AWS credentials are exported correctly
+AWS credentials entered in terminal are valid
+us-east-2 is a valid region
+sales-lead-docs is a valid bucket name
+data360-lambda-source-prashant2026 is a valid bucket name
+case-studies is a valid S3 key within sales-lead-docs bucket
+aws_lambda_function.zip is a valid S3 key within data360-lambda-source-prashant2026 bucket
+local source code for cloud function exists at /Users/atriprimac/data360-s3-pipeline/file-notifier-for-blob-store-main/cloud_function_zips/aws_lambda_function.zip
+/Users/atriprimac/data360-s3-pipeline/file-notifier-for-blob-store-main/cloud_function_zips/aws_lambda_function.zip has a valid file of type .zip
+PEM file required for creation of secrete exists at /Users/atriprimac/server.pem
+/Users/atriprimac/server.pem has a valid file of type .pem
+No validation errors.
+Step 1/16 : Successfully logged into AWS
+{
+    "Role": {
+        "Path": "/",
+        "RoleName": "data360-s3-notifier-role",
+        "RoleId": "AROAXT6OAJMFQCYHOBDQE",
+        "Arn": "arn:aws:iam::523881171723:role/data360-s3-notifier-role",
+        "CreateDate": "2026-08-02T08:02:29+00:00",
+        "AssumeRolePolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                        "Service": "lambda.amazonaws.com"
+                    },
+                    "Action": "sts:AssumeRole"
+                }
+            ]
+        }
+    }
+}
+Step 2/16 : Successfully created iam-role with name data360-s3-notifier-role.
+LAMBDA_ROLE_ARN: arn:aws:iam::523881171723:role/data360-s3-notifier-role
+{
+    "ARN": "arn:aws:secretsmanager:us-east-2:523881171723:secret:data360-consumer-key-A5jHlq",
+    "Name": "data360-consumer-key",
+    "VersionId": "9a33f1cb-97d4-493d-b740-3d977e09671b"
+}
+Step 3/16 : Secrete Key with name data360-consumer-key created successfully.
+{
+    "ARN": "arn:aws:secretsmanager:us-east-2:523881171723:secret:data360-rsa-key-0O4UaJ",
+    "Name": "data360-rsa-key",
+    "VersionId": "a5a49591-0b61-4b50-85a5-43457844a97f"
+}
+Step 4/16 : Successfully created data360-rsa-key
+Step 5/16 : Bucket data360-lambda-source-prashant2026 exists, skipping the creation of new bucket
+Step 6/16 : Bucket sales-lead-docs exists, skipping the creation of new bucket
+Step 7/16 : case-studies directory already exists in sales-lead-docs bucket, skipping it's creation.
+Step 8/16 : Successfully created policy IAM_POLICY for data360-s3-notifier-role role in aws account 523881171723
