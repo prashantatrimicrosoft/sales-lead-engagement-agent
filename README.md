@@ -72,8 +72,6 @@ to directly.
 
 ## Architecture — Data 360 as the grounding layer
 
-## Architecture — Data 360 as the grounding layer
-
 ```mermaid
 flowchart TB
     subgraph ExtSrc["External sources"]
