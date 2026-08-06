@@ -41,20 +41,13 @@ recommendation, warm/cold relationship status, and a suggested opening line.
 
 ## Architecture — multi-agent system
 
-```mermaid
-flowchart TD
-    User[Seller's request] --> Router{Agent Router}
-    Router -->|full research / briefing| Research[Research Agent]
-    Router -->|standalone warm/cold check| Warm[Warm-Path Agent]
-    Router -->|escalation / off-topic / ambiguous| Fallback[Built-in fallback subagents]
+![Multi-agent architecture](docs/architecture-subagents.svg)
 
-    Research -->|"5 actions: resolve account,<br/>news, live trigger,<br/>case study, product fit"| Research
-    Research ==>|transition| Warm
-    Warm -->|"1 action:<br/>relationship recency"| Warm
-    Warm ==>|"transition, if part of<br/>a full research request"| Outreach[Outreach Agent]
-    Warm -.->|standalone question:<br/>answers directly| Done1[Warm/cold answer]
-    Outreach -->|synthesizes everything,<br/>no actions of its own| Done2[Complete outreach brief]
-```
+Most of the actual work happens in **Research Agent** (five actions:
+resolving the account, batch news, real-time live triggers, case studies,
+and product fit) and **Warm-Path Agent** (relationship recency and fit
+score). **Outreach Agent** carries no actions of its own — it only
+synthesizes what the other two already gathered into one final brief.
 
 **Key architectural finding:** Agentforce's built-in Agent Router only
 supports single-hop routing — it hands off to exactly one subagent per turn
@@ -65,67 +58,23 @@ subagent's own reasoning — not the router — decides when to hand off next.
 Research Agent runs its own actions, then transitions to Warm-Path Agent,
 which conditionally transitions to Outreach Agent for final synthesis. This
 forms a directed, three-hop chain within a single user turn — reachable only
-this way, since Outreach Agent has no actions of its own and is never routed
-to directly.
+this way, since Outreach Agent is never routed to directly.
 
 ---
 
 ## Architecture — Data 360 as the grounding layer
 
-```mermaid
-flowchart TB
-    subgraph ExtSrc["External sources"]
-        direction LR
-        S3["AWS S3<br/>case studies, product one-pagers<br/>(unstructured files)"]
-        Push["Ingestion API push<br/>curl, OAuth-authenticated<br/>(live news triggers)"]
-    end
-
-    subgraph IntSrc["Internal source"]
-        CRM["Salesforce CRM connector<br/>Account, Relationship_Signal__c,<br/>Account_News__c"]
-    end
-
-    subgraph D360["Data 360 (Data Cloud) — unified grounding layer"]
-        direction LR
-        Structured["Structured DMOs<br/>mirrors CRM objects"]
-        Insights["Calculated Insights<br/>fit score, win rate, recency<br/>(computed within Data 360)"]
-        Unstructured["Unstructured DMOs<br/>Case_Studies_DMO,<br/>Product_OnePagers_DMO<br/>+ Search Index / retrievers"]
-        RealTime["Real-time DMO<br/>Live_News_Trigger_DMO"]
-    end
-
-    subgraph AF["Agentforce"]
-        Flows["Flows<br/>(deterministic lookups)"]
-        Prompts["Prompt Templates<br/>(retriever + LLM)"]
-        Actions[Agentforce Actions]
-        Agents[Research / Warm-Path / Outreach Agents]
-    end
-
-    S3 -->|batch sync, Data Stream| Unstructured
-    Push -->|streaming ingestion| RealTime
-    CRM -->|Salesforce connector, Data Stream| Structured
-    Structured --> Insights
-
-    Structured --> Flows
-    RealTime --> Flows
-    Unstructured --> Prompts
-    Insights -.->|"blocked from direct Flow access —<br/>see known limitations"| Flows
-
-    Flows --> Actions
-    Prompts --> Actions
-    Actions --> Agents
-
-    classDef default color:#000000,stroke:#333333
-    style ExtSrc color:#000000,stroke:#333333
-    style IntSrc color:#000000,stroke:#333333
-    style D360 color:#000000,stroke:#333333
-    style AF color:#000000,stroke:#333333
-```
+![Data 360 as the grounding layer](docs/architecture-data360.svg)
 
 **Why this split matters:** Data 360 is the single unified layer beneath
-Agentforce — structured CRM data, computed insights, unstructured documents,
-and real-time streamed events all live here, regardless of source or shape.
-Agentforce never touches raw data directly; every action grounds itself
-through either a Flow (deterministic, one right answer) or a Prompt Template
-plus retriever (semantic, judgment-based). The one dotted line marks a real,
+Agentforce, but the data arriving there comes from genuinely different
+places — **external** sources (AWS S3 for unstructured documents, a
+curl-driven Ingestion API push for real-time triggers) and an **internal**
+source (the standard Salesforce CRM connector for structured objects).
+Data 360 normalizes all of it into DMOs regardless of origin, and Agentforce
+never touches raw data directly — every action grounds itself through
+either a Flow (deterministic, one right answer) or a Prompt Template plus
+retriever (semantic, judgment-based). The one dotted line marks a real,
 diagnosed limitation: Calculated Insight objects are blocked from Flow's Get
 Records in this environment, so `Account_Fit_Score_Final` — though fully
 computed and verified in Data 360 — isn't yet wired into the agent layer.
