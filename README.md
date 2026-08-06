@@ -72,14 +72,26 @@ to directly.
 
 ## Architecture — Data 360 as the grounding layer
 
+## Architecture — Data 360 as the grounding layer
+
 ```mermaid
 flowchart TB
+    subgraph ExtSrc["External sources"]
+        direction LR
+        S3["AWS S3<br/>case studies, product one-pagers<br/>(unstructured files)"]
+        Push["Ingestion API push<br/>curl, OAuth-authenticated<br/>(live news triggers)"]
+    end
+
+    subgraph IntSrc["Internal source"]
+        CRM["Salesforce CRM connector<br/>Account, Relationship_Signal__c,<br/>Account_News__c"]
+    end
+
     subgraph D360["Data 360 (Data Cloud) — unified grounding layer"]
         direction LR
-        Structured["Structured<br/>Account, Relationship_Signal__c,<br/>Account_News__c"]
-        Insights["Calculated Insights<br/>fit score, win rate, recency"]
-        Unstructured["Unstructured<br/>case studies, product docs<br/>(Search Index / retrievers)"]
-        RealTime["Real-time<br/>Live_News_Trigger_DMO<br/>(Ingestion API)"]
+        Structured["Structured DMOs<br/>mirrors CRM objects"]
+        Insights["Calculated Insights<br/>fit score, win rate, recency<br/>(computed within Data 360)"]
+        Unstructured["Unstructured DMOs<br/>Case_Studies_DMO,<br/>Product_OnePagers_DMO<br/>+ Search Index / retrievers"]
+        RealTime["Real-time DMO<br/>Live_News_Trigger_DMO"]
     end
 
     subgraph AF["Agentforce"]
@@ -89,6 +101,11 @@ flowchart TB
         Agents[Research / Warm-Path / Outreach Agents]
     end
 
+    S3 -->|batch sync, Data Stream| Unstructured
+    Push -->|streaming ingestion| RealTime
+    CRM -->|Salesforce connector, Data Stream| Structured
+    Structured --> Insights
+
     Structured --> Flows
     RealTime --> Flows
     Unstructured --> Prompts
@@ -97,6 +114,12 @@ flowchart TB
     Flows --> Actions
     Prompts --> Actions
     Actions --> Agents
+
+    classDef default color:#000000,stroke:#333333
+    style ExtSrc color:#000000,stroke:#333333
+    style IntSrc color:#000000,stroke:#333333
+    style D360 color:#000000,stroke:#333333
+    style AF color:#000000,stroke:#333333
 ```
 
 **Why this split matters:** Data 360 is the single unified layer beneath
