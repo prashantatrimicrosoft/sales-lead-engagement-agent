@@ -82,6 +82,22 @@ Everything else in this diagram is a proven, working connection.
 
 ---
 
+## Architecture — Agent Router and the transition chain
+
+![Agent Router and subagent transition flow](docs/architecture-router-transitions.svg)
+
+Agent Router makes exactly one decision per turn: it routes directly to
+either **Research Agent** (full research/briefing requests) or
+**Warm-Path Agent** (standalone relationship questions) — never to
+**Outreach Agent** directly, since it has no actions of its own. From
+there, the chain continues horizontally through direct subagent-to-subagent
+transitions, not further routing: Research Agent transitions to Warm-Path
+Agent, which conditionally transitions onward to Outreach Agent for final
+synthesis, or answers directly (dashed line) if the request was a standalone
+relationship question with nothing further to combine.
+
+---
+
 ## Advance delivery
 
 - **Multi-agent collaboration** — three specialist subagents (Research,
