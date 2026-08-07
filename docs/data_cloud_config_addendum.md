@@ -1,4 +1,4 @@
-## Real-time news trigger pipeline (added — real-time/streaming extra credit)
+## Real-time news trigger pipeline (added — real-time/streaming)
 
 Not retrievable via standard Salesforce metadata — Data Cloud-specific
 configuration, documented manually.

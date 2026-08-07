@@ -39,6 +39,26 @@ recommendation, warm/cold relationship status, and a suggested opening line.
 
 ---
 
+## Architecture — Data360 as the grounding layer
+
+![Data 360 as the grounding layer](docs/architecture-data360.svg)
+
+**Why this split matters:** Data 360 is the single unified layer beneath
+Agentforce, but the data arriving there comes from genuinely different
+places — **external** sources (AWS S3 for unstructured documents, a
+curl-driven Ingestion API push for real-time triggers) and an **internal**
+source (the standard Salesforce CRM connector for structured objects).
+Data 360 normalizes all of it into DMOs regardless of origin, and Agentforce
+never touches raw data directly — every action grounds itself through
+either a Flow (deterministic, one right answer) or a Prompt Template plus
+retriever (semantic, judgment-based). The one dotted line marks a real,
+diagnosed limitation: Calculated Insight objects are blocked from Flow's Get
+Records in this environment, so `Account_Fit_Score_Final` — though fully
+computed and verified in Data 360 — isn't yet wired into the agent layer.
+Everything else in this diagram is a proven, working connection.
+
+---
+
 ## Architecture — multi-agent system
 
 ![Multi-agent architecture](docs/architecture-subagents.svg)
@@ -59,26 +79,6 @@ Research Agent runs its own actions, then transitions to Warm-Path Agent,
 which conditionally transitions to Outreach Agent for final synthesis. This
 forms a directed, three-hop chain within a single user turn — reachable only
 this way, since Outreach Agent is never routed to directly.
-
----
-
-## Architecture — Data 360 as the grounding layer
-
-![Data 360 as the grounding layer](docs/architecture-data360.svg)
-
-**Why this split matters:** Data 360 is the single unified layer beneath
-Agentforce, but the data arriving there comes from genuinely different
-places — **external** sources (AWS S3 for unstructured documents, a
-curl-driven Ingestion API push for real-time triggers) and an **internal**
-source (the standard Salesforce CRM connector for structured objects).
-Data 360 normalizes all of it into DMOs regardless of origin, and Agentforce
-never touches raw data directly — every action grounds itself through
-either a Flow (deterministic, one right answer) or a Prompt Template plus
-retriever (semantic, judgment-based). The one dotted line marks a real,
-diagnosed limitation: Calculated Insight objects are blocked from Flow's Get
-Records in this environment, so `Account_Fit_Score_Final` — though fully
-computed and verified in Data 360 — isn't yet wired into the agent layer.
-Everything else in this diagram is a proven, working connection.
 
 ---
 
