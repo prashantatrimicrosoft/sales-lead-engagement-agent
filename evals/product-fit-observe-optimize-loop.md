@@ -12,6 +12,12 @@ loop, end to end, with evidence at each step.
 
 ---
 
+## EVALS - Testing Center
+
+![evals testing center v1](../docs/evals-screen-v8.jpg)
+
+---
+
 ## TL;DR
 
 | | Before (Version 7) | After (V8EvalFixProductFit) |
