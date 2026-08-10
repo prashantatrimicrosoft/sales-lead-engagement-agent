@@ -61,7 +61,7 @@ Everything else in this diagram is a proven, working connection.
 
 ## Architecture — multi-agent system
 
-![Multi-agent architecture](docs/architecture-subagents.svg)
+![Multi-agent architecture](docs/architecture-multiagent-v2.jpg)
 
 Most of the actual work happens in **Research Agent** (five actions:
 resolving the account, batch news, real-time live triggers, case studies,
