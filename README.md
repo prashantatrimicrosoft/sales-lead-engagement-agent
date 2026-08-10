@@ -41,7 +41,7 @@ recommendation, warm/cold relationship status, and a suggested opening line.
 
 ## Architecture — Data360 as the grounding layer
 
-![Data 360 as the grounding layer](docs/architecture-data360.svg)
+![Data 360 as the grounding layer](docs/architecture-Data360-v2.jpg)
 
 **Why this split matters:** Data 360 is the single unified layer beneath
 Agentforce, but the data arriving there comes from genuinely different
