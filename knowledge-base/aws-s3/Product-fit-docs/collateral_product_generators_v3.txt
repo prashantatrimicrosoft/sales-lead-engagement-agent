@@ -1,0 +1,16 @@
+Title: Standby and Emergency Generator Systems - Product Overview
+Doc_Type: Product One-Pager
+Industry_Tag: All Industries, Manufacturing, Electronics, Biotechnology, Hospitality, Logistics, Energy
+
+Summary:
+Standby and emergency generator systems, sized from small facility backup through full industrial-scale continuous power, for organizations where downtime carries real operational or financial cost.
+
+Core offering:
+- Standby generators for planned backup during utility outages, automatically engaging within seconds of a power loss.
+- Emergency generator systems for critical loads - lab equipment, cold storage, production lines, data infrastructure - where even brief interruption is unacceptable.
+- Right-sizing assessment included with every installation, matching generator capacity to actual facility load rather than defaulting to oversized, higher-cost systems.
+- Fuel options including diesel and natural gas, selected based on facility runtime requirements and local fuel availability.
+
+Typical deployment timeline runs 4-8 weeks from site assessment to full activation, depending on facility size and permitting requirements in the local jurisdiction.
+
+Best fit: facilities where power interruption risks product loss (cold storage, lab samples), production downtime (manufacturing, textiles), safety (hospitals, hospitality), or missed service commitments (logistics, data centers).

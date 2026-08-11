@@ -1,0 +1,12 @@
+Title: Protecting Network Infrastructure from Power-Related Downtime
+Doc_Type: Case Study
+Industry_Tag: Electronics, Networking, Telecommunications
+
+Summary:
+A network equipment manufacturer was expanding its production and testing facilities, and a single unplanned power interruption during a firmware validation run could cost days of re-testing and delay equipment shipments to customers. Standard utility power alone wasn't reliable enough to protect facilities running continuous network testing and manufacturing equipment.
+
+The company installed a standby generator system sized for its production floor and testing labs, paired with an ongoing SLA covering scheduled maintenance, load testing, and 24-hour emergency response. Since installation, the facility has avoided production downtime during three separate regional outages, and the maintenance contract has caught two potential generator issues before they became failures.
+
+For electronics and networking companies specifically, where testing equipment and clean rooms are sensitive to even brief power interruptions, a properly sized standby generator with an active SLA isn't a backup plan - it's part of maintaining production quality and delivery schedules.
+
+Why it matters: in equipment manufacturing, an hour of unplanned downtime often costs far more than a year of generator maintenance.

@@ -1,0 +1,12 @@
+Title: Keeping Production and Logistics Moving Through Power Disruptions
+Doc_Type: Case Study
+Industry_Tag: Manufacturing, Apparel, Textiles, Logistics, Transportation
+
+Summary:
+A textile manufacturer running multi-shift production lines found that even short power interruptions disrupted equipment calibration and created costly restart delays across the plant floor. Similarly, logistics operators depend on continuous power for warehouse systems, refrigerated storage, and dispatch operations - an outage during peak shipping windows can cascade into missed delivery commitments.
+
+Both types of operations addressed this the same way: a standby generator sized to the facility's critical load, backed by an SLA covering scheduled maintenance and rapid emergency dispatch. For the textile manufacturer, this meant production lines stayed running through a multi-hour regional outage with no shift lost. For a logistics operator, it meant refrigerated inventory and warehouse management systems stayed online during a similar event, avoiding both spoilage risk and missed shipping windows.
+
+In manufacturing, textiles, and logistics specifically, where multi-shift operations and time-sensitive delivery commitments leave little room for downtime, standby power paired with proactive maintenance has become a standard part of facility planning rather than an afterthought.
+
+Why it matters: one avoided outage during peak production or peak shipping season typically pays for years of generator maintenance.

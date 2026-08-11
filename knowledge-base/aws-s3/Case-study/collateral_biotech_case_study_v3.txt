@@ -1,0 +1,12 @@
+Title: Safeguarding Lab Operations with Reliable Backup Power
+Doc_Type: Case Study
+Industry_Tag: Biotechnology, Life Sciences, Healthcare
+
+Summary:
+A growth-stage biotechnology company's lab operations depend on continuous power for sample storage, incubation equipment, and sensitive instrumentation. A single extended outage risked not just downtime, but the loss of irreplaceable samples and months of research work - a risk the company's aging backup power setup wasn't adequately covering as the lab expanded.
+
+The company installed a dedicated standby generator sized for its lab and cold-storage loads, along with an SLA that includes quarterly load testing and priority emergency response. When a regional outage hit shortly after installation, the generator carried the full lab load without interruption, protecting an active sample set worth months of research investment.
+
+For biotech and life sciences organizations, where funding rounds often accelerate lab build-outs faster than facilities planning can keep up, right-sized backup power paired with an active maintenance contract is frequently the difference between a routine outage and a costly research setback.
+
+Why it matters: in life sciences, protecting the samples in the freezer is often more valuable than protecting the equipment around them.

@@ -1,0 +1,16 @@
+Title: Installation and SLA Maintenance Program - Product Overview
+Doc_Type: Product One-Pager
+Industry_Tag: All Industries, Manufacturing, Electronics, Biotechnology, Hospitality, Logistics, Energy
+
+Summary:
+Generator installation and ongoing maintenance service, covering the full lifecycle from initial setup through continuous reliability monitoring, so backup power systems perform when actually needed rather than only during testing.
+
+Core offering:
+- Full installation service, including electrical integration, automatic transfer switch setup, and initial load testing.
+- SLA maintenance tiers covering scheduled inspections, quarterly or semi-annual load testing, and priority emergency response commitments.
+- 24-hour emergency dispatch for active outages under premium SLA tiers.
+- Proactive component monitoring designed to catch early signs of battery, fuel system, or transfer switch issues before they cause a failure during an actual outage.
+
+Facilities under an active SLA see meaningfully lower unplanned-failure rates than those relying on generators without a maintenance contract, since most generator failures stem from components that degrade silently between rare activation events.
+
+Best fit: any organization that has already invested in backup power and wants assurance the system will perform during an actual event, not just during scheduled testing.

@@ -1,0 +1,12 @@
+Title: Keeping Guest Operations Running When the Power Doesn't
+Doc_Type: Case Study
+Industry_Tag: Hospitality, Hotels, Resorts
+
+Summary:
+A hotel and resort operator faced a different kind of downtime risk than most industries: a power outage isn't just an internal operational problem, it's immediately visible to paying guests. Dark hallways, non-functioning elevators, and a shut-down kitchen mid-service create complaints and refund requests, not just delays.
+
+The property installed a standby generator sized to cover guest-critical loads - kitchen operations, elevators, emergency lighting, and climate control - separate from a smaller portable unit used for outdoor event power during planned functions. Paired with an SLA including pre-season load testing ahead of peak booking periods, the property maintained full guest services through two separate outages, with guests largely unaware an outage had even occurred.
+
+For hospitality operators specifically, backup power planning has to account for two different scenarios: continuous protection for core guest-facing systems, and flexible, portable power for events and outdoor functions - which often calls for a different generator configuration than a typical industrial facility.
+
+Why it matters: in hospitality, an outage doesn't just cost operating time - it costs guest trust, and often shows up in reviews.
