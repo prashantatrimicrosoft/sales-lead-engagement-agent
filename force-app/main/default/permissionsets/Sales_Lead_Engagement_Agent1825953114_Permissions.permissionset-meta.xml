@@ -4,6 +4,10 @@
         <apexClass>CaseStudyCitedLookup</apexClass>
         <enabled>true</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>GetAccountFitScoreAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
     <description>Allows custom permissions for Agentforce Agent : Sales_Lead_Engagement_Agent&apos;s agent user : sales_lead_engagement_agent@00dgk00000vmbe71543139114.ext.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Sales_Lead_Engagement_Agent1825953114 Permissions</label>

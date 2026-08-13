@@ -40,6 +40,14 @@
         </filters>
         <object>Generator_Telemetry_DMO__dlm</object>
         <outputAssignments>
+            <assignToReference>TelemetryDataSourceObject</assignToReference>
+            <field>DataSourceObject__c</field>
+        </outputAssignments>
+        <outputAssignments>
+            <assignToReference>TelemetryDataSource</assignToReference>
+            <field>DataSource__c</field>
+        </outputAssignments>
+        <outputAssignments>
             <assignToReference>FAULT_CODES_30D</assignToReference>
             <field>fault_codes_30d__c</field>
         </outputAssignments>
@@ -105,6 +113,20 @@
     <variables>
         <name>NEXT_MAINTENANCE_DUE</name>
         <dataType>Date</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>TelemetryDataSource</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>TelemetryDataSourceObject</name>
+        <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
